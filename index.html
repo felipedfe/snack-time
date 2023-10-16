@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="user-scalable=0, initial-scale=1,minimum-scale=1, maximum-scale=1, width=device-width, minimal-ui=1">
+  <title>Game Title Here</title>
+  <script src="js/phaser.min.js"> </script>
+  <script src="js/Constants.js"></script>
+  <script src="js/GlobalSettings.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/resizeCanvas.js"></script>
+  <script src="js/util/align.js"></script>
+  <script src="js/util/alignGrid.js"></script>
+  <script src="js/util/mediaManager.js"></script>
+  <script src="js/util/UIBlock.js"></script>
+  <script src="js/Effect.js"></script>
+  <script src="js/ui/TextButton.js"></script>
+  <script src="js/CircleTimer.js"></script>
+  <script src="js/Controller.js"></script>
+  <script src="js/scenes/SceneLoad.js"></script>
+  <script src="js/scenes/SceneMain.js"></script>
+  <script src="js/scenes/SceneTitle.js"></script>
+  <script src="js/scenes/SceneOver.js"></script>
+  <script src="js/scenes/SceneInstructions.js"></script>
+  <script src="js/scenes/SceneSettings.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      /* height: 100%; */
+      background-color: pink;
+      height: 100vh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+
+      /* position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%); */
+    }
+
+    #game-container {
+      /* esse aspect-ratio é referente ao tamanho do canvas 1360 / 740 */
+      aspect-ratio: auto 1360 / 740;
+      width: 98vw;
+      height: 100vh;
+      background-color: red;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%); */
+
+      max-width: 1360px!important;
+      max-height: 740px!important;
+    }
+  </style>
+</head>
+
+<body>
+  <section id="game-container">
+
+  </section>
+</body>
+
+</html>

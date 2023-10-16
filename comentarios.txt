@@ -1,0 +1,13 @@
+1)
+When you use the code this.input.on("gameobjectdown", this.selectBlock, this); in Phaser, the this.selectBlock function will be passed the following parameters:
+
+pointer: The pointer object representing the input device (mouse, touch, etc.) that triggered the event. It provides information about the pointer's position, button, and other properties.
+
+gameObject: The game object that was clicked or interacted with, triggering the "gameobjectdown" event. It is the specific game object that has been assigned as interactive using setInteractive().
+
+event: The original browser event that triggered the input. It provides access to additional properties and methods related to the underlying browser event.
+
+These parameters allow you to access relevant information about the input event and the game object that was interacted with. For example, you can use pointer.x and pointer.y to get the coordinates of the pointer, or gameObject.name to retrieve the name or ID of the clicked object. This information can be used to perform specific actions or update game state based on the interaction.
+
+Make sure that the this.selectBlock function accepts these parameters in the same order to handle the event correctly.
+
