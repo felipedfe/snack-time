@@ -54,30 +54,60 @@ class SceneMain extends Phaser.Scene {
     };
 
     // Sorteio
-    this.RoundDraw();
+    // lista de personagens e baloes que podem ser sorteados a cada rodada
+    this.balloonsToBeDrawn = [1, 2, 3, 4, 5];
+    this.characterToBeDrawn = [1, 2, 3, 4, 5];
+    Shuffle.shuffleArray(this.balloonsToBeDrawn);
+    Shuffle.shuffleArray(this.characterToBeDrawn);
+    this.RoundDraw(this.balloonsToBeDrawn, this.characterToBeDrawn);
 
   } //// fim da create ////
 
 
   // funcao que sorteia um numero
-  drawNumber() {
-    return Math.floor(Math.random() * 5) + 1;
+  drawNumber(list) {
+    const index = Math.floor(Math.random() * list.length);
+    // const drawnNumber = list[index];
+    // tira o numero sorteado e retorn o primeiro do array (o array já foi embaralhado antes)
+    const drawnNumber = list.splice(index, 1)[0];
+    return drawnNumber;
   }
 
   // sorteia balao e personagem
-  RoundDraw() {
-    let balloonNumber = this.drawNumber();
-    let characterNumber = this.drawNumber();
+  RoundDraw(balloonList, characterList) {
+    const gameLevel = global.settings.level;
+    for (let i = 0; i < gameLevel; i += 1) {
+      let balloonNumber = this.drawNumber(balloonList);
+      let characterNumber = this.drawNumber(characterList);
 
-    const allCharacters = this.characters.children.entries;
-    const drawnCharacter = allCharacters.filter((item) => item.id === characterNumber)[0];
-    drawnCharacter.balloonId = balloonNumber;
-    console.log("1->", characterNumber);
-    console.log("2->", drawnCharacter);
+      // associa um personagem a um balao
+      const allCharacters = this.characters.children.entries;
+      const drawnCharacter = allCharacters.filter((item) => item.id === characterNumber)[0];
+      drawnCharacter.balloonId = balloonNumber;
+      console.log("----------")
+      console.log("characterNumber ->", characterNumber);
+      console.log("balloonNumber ->", balloonNumber);
 
-    // adiciona balao proximo ao personagem sorteado
-    this.roundBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
-    this.roundBalloon.setOrigin(0, 0);
+
+      // adiciona balao proximo ao personagem sorteado
+      this.roundBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
+      this.roundBalloon.setOrigin(0, 0);
+
+      const drawnCharIndex = characterList.indexOf(characterNumber);
+      console.log("___char index_____", drawnCharIndex)
+      // if (drawnCharIndex != -1) {
+      //   characterList.splice(drawnCharIndex, 1);
+      // };
+
+      const drawnBalloonIndex = characterList.indexOf(balloonNumber);
+      console.log("___ballon index_____", drawnBalloonIndex)
+      // if (drawnBalloonIndex != -1) {
+      //   balloonList.splice(drawnBalloonIndex, 1);
+      // };
+
+      console.log("character list: ", characterList);
+      console.log("balloon list: ", balloonList);
+    }
   };
 
   update() {
