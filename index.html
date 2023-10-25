@@ -10,7 +10,7 @@
   <script src="js/Constants.js"></script>
   <script src="js/GlobalSettings.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/resizeCanvas.js"></script>
+  <script src="js/util/shuffle.js"></script>
   <script src="js/util/align.js"></script>
   <script src="js/util/alignGrid.js"></script>
   <script src="js/util/mediaManager.js"></script>
@@ -48,11 +48,6 @@
       max-height: 100%;
       width: auto;
       height: auto;
-
-      /* position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%); */
     }
 
     #game-container {
@@ -60,7 +55,7 @@
       aspect-ratio: auto 1360 / 740;
       width: 98vw;
       height: 100vh;
-      background-color: red;
+      /* background-color: red; */
 
       display: flex;
       justify-content: center;
