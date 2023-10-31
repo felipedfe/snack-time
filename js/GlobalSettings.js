@@ -1,6 +1,6 @@
 class GlobalSettings {
   constructor() {
-    this.level = 2;
+    this.level = 1;
     this.score = 0;
     this._musicOn = true;
     this._sfxOn = true;
