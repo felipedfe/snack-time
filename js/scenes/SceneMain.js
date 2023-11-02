@@ -53,7 +53,7 @@ class SceneMain extends Phaser.Scene {
     let dishShuffled = [...dishOrder];
     Shuffle.shuffleArray(dishOrder);
 
-    console.log("ORDEM : ",dishOrder)
+    console.log("ORDEM : ", dishOrder)
 
     // posiciona os pratos
     for (let i = 0; i < 5; i += 1) {
@@ -80,7 +80,9 @@ class SceneMain extends Phaser.Scene {
     // lista de personagens e baloes que podem ser sorteados a cada rodada
     this.balloonsToBeDrawn = [1, 2, 3, 4, 5];
     this.characterToBeDrawn = [1, 2, 3, 4, 5];
-    Shuffle.shuffleArray(this.balloonsToBeDrawn);
+    this.roundBalloons = [...this.balloonsToBeDrawn];
+    this.roundCharacters = [...this.characterToBeDrawn];
+    Shuffle.shuffleArray(this.roundBalloons);
     Shuffle.shuffleArray(this.characterToBeDrawn);
     this.RoundDraw(this.balloonsToBeDrawn, this.characterToBeDrawn);
 
@@ -95,33 +97,29 @@ class SceneMain extends Phaser.Scene {
       gameObject.y = dragY;
     });
 
-    this.input.on('dragenter', (pointer, gameObject, dropZone) => {
-      // console.log("eeeenter!")
-    });
+    // this.input.on('dragenter', (pointer, gameObject, dropZone) => {
+    // });
 
-    this.input.on('dragover', (pointer, gameObject, dropZone) => {
-      console.log("over!")
-    });
+    // this.input.on('dragover', (pointer, gameObject, dropZone) => {
+    //   console.log("over!")
+    // });
 
     this.input.on('dragend', (pointer, gameObject, dropped) => {
-      console.log("END");
-      console.log("DROpped> ", dropped)
-      if (dropped) {
-        // console.log("-----------> ", gameObject)
+      if (!dropped) {
+        this.returnInitialPosition(gameObject);
       }
     });
 
     this.input.on('drop', (pointer, gameObject, target) => {
-      console.log('--game ob->', gameObject); 
+      console.log('--game ob->', gameObject);
       // console.log('--target->', target);
       console.log("pointer: ", pointer)
       if (target.balloonId === gameObject.id) {
         console.log("Acertou")
+        gameObject.destroy();
       } else {
         console.log("Errou")
-        // console.log(target.prevPosition)
-        gameObject.x = gameObject.initialXPos;
-        gameObject.y = gameObject.initialYPos;
+        this.returnInitialPosition(gameObject);
       }
     })
 
@@ -143,7 +141,7 @@ class SceneMain extends Phaser.Scene {
   drawNumber(list) {
     const index = Math.floor(Math.random() * list.length);
     // const drawnNumber = list[index];
-    // tira o numero sorteado e retorn o primeiro do array (o array já foi embaralhado antes)
+    // tira o numero sorteado e retorna o primeiro do array (o array já foi embaralhado antes)
     const drawnNumber = list.splice(index, 1)[0];
     return drawnNumber;
   }
@@ -162,12 +160,12 @@ class SceneMain extends Phaser.Scene {
       console.log("----------")
       console.log("characterNumber ->", characterNumber);
       console.log("balloonNumber ->", balloonNumber);
-      console.log("persongem sorteado ->", drawnCharacter);
+      //console.log("persongem sorteado ->", drawnCharacter);
 
 
       // adiciona balao proximo ao personagem sorteado na tela
-      this.roundBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
-      this.roundBalloon.setOrigin(0, 0);
+      this.drawnBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
+      this.drawnBalloon.setOrigin(0, 0);
 
       // const drawnCharIndex = characterList.indexOf(characterNumber);
       // console.log("___char index_____", drawnCharIndex)
@@ -185,6 +183,12 @@ class SceneMain extends Phaser.Scene {
       console.log("balloon list: ", balloonList);
     }
   };
+
+  returnInitialPosition(gameObj) {
+    gameObj.x = gameObj.initialXPos;
+    gameObj.y = gameObj.initialYPos;
+  };
+
 
   update() {
 
