@@ -82,9 +82,10 @@ class SceneMain extends Phaser.Scene {
     this.characterToBeDrawn = [1, 2, 3, 4, 5];
     this.roundBalloons = [...this.balloonsToBeDrawn];
     this.roundCharacters = [...this.characterToBeDrawn];
+    this.drawnBalloons = [];
     Shuffle.shuffleArray(this.roundBalloons);
     Shuffle.shuffleArray(this.characterToBeDrawn);
-    this.RoundDraw(this.balloonsToBeDrawn, this.characterToBeDrawn);
+    this.RoundDraw(this, this.balloonsToBeDrawn, this.characterToBeDrawn);
 
     // comportamentos do Drag and Drop 
     this.input.on('dragstart', (pointer, gameObject) => {
@@ -116,7 +117,9 @@ class SceneMain extends Phaser.Scene {
       console.log("pointer: ", pointer)
       if (target.balloonId === gameObject.id) {
         console.log("Acertou")
+        console.log('balloon id: ', target)
         gameObject.destroy();
+        this.destroyBalloon(target.balloonId);
       } else {
         console.log("Errou")
         this.returnInitialPosition(gameObject);
@@ -147,7 +150,7 @@ class SceneMain extends Phaser.Scene {
   }
 
   // sorteia balao e personagem a cada rodada
-  RoundDraw(balloonList, characterList) {
+  RoundDraw(scene, balloonList, characterList) {
     const gameLevel = global.settings.level;
     for (let i = 0; i < gameLevel; i += 1) {
       let balloonNumber = this.drawNumber(balloonList);
@@ -162,27 +165,24 @@ class SceneMain extends Phaser.Scene {
       console.log("balloonNumber ->", balloonNumber);
       //console.log("persongem sorteado ->", drawnCharacter);
 
-
       // adiciona balao proximo ao personagem sorteado na tela
-      this.drawnBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
-      this.drawnBalloon.setOrigin(0, 0);
-
-      // const drawnCharIndex = characterList.indexOf(characterNumber);
-      // console.log("___char index_____", drawnCharIndex)
-      // if (drawnCharIndex != -1) {
-      //   characterList.splice(drawnCharIndex, 1);
-      // };
-
-      // const drawnBalloonIndex = characterList.indexOf(balloonNumber);
-      // console.log("___ballon index_____", drawnBalloonIndex)
-      // if (drawnBalloonIndex != -1) {
-      //   balloonList.splice(drawnBalloonIndex, 1);
-      // };
+      const drawnBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
+      drawnBalloon.id = balloonNumber;
+      drawnBalloon.setOrigin(0, 0);
+      scene.drawnBalloons.push(drawnBalloon);
 
       console.log("character list: ", characterList);
       console.log("balloon list: ", balloonList);
+      console.log('SCENE: ', scene.drawnBalloons);
     }
   };
+
+  destroyBalloon(id) {
+    const self = this;
+    const balloon = this.drawnBalloons.find((item) => item.id === id);
+    balloon.destroy();
+    console.log('this ', self)
+  }
 
   returnInitialPosition(gameObj) {
     gameObj.x = gameObj.initialXPos;
