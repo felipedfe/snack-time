@@ -46,46 +46,46 @@ class SceneMain extends Phaser.Scene {
     this.table.setOrigin(0, 0);
 
     // Pratos
-    this.dishes = this.add.group();
-    let dishInitialXPos = 80;
-    let dishInitialYPos;
-    let dishOrder = [0, 1, 2, 3, 4,];
-    let dishShuffled = [...dishOrder];
-    Shuffle.shuffleArray(dishOrder);
+    // this.dishes = this.add.group();
+    // let dishInitialXPos = 80;
+    // let dishInitialYPos;
+    // let dishOrder = [0, 1, 2, 3, 4,];
+    // let dishShuffled = [...dishOrder];
+    // Shuffle.shuffleArray(dishOrder);
 
-    console.log("ORDEM : ", dishOrder)
+    // console.log("ORDEM : ", dishOrder)
 
-    // posiciona os pratos
-    for (let i = 0; i < 5; i += 1) {
-      // pra fazer o zizag de posicoes de prato
-      if (i % 2 === 0) {
-        dishInitialYPos = 540;
-      } else {
-        dishInitialYPos = 420;
-      }
+    // // posiciona os pratos
+    // for (let i = 0; i < 5; i += 1) {
+    //   // pra fazer o zizag de posicoes de prato
+    //   if (i % 2 === 0) {
+    //     dishInitialYPos = 540;
+    //   } else {
+    //     dishInitialYPos = 420;
+    //   }
 
-      const child = this.add.image(dishInitialXPos, dishInitialYPos, `dish-${dishOrder[i] + 1}`);
-      // deixando o prato interativo
-      child.setInteractive();
-      this.input.setDraggable(child);
-      child.id = dishOrder[i] + 1;
-      child.initialXPos = dishInitialXPos;
-      child.initialYPos = dishInitialYPos;
-      this.dishes.add(child);
-      this.dishes.setOrigin(0, 0);
-      dishInitialXPos += 250;
-    };
+    //   const child = this.add.image(dishInitialXPos, dishInitialYPos, `dish-${dishOrder[i] + 1}`);
+    //   // deixando o prato interativo
+    //   child.setInteractive();
+    //   this.input.setDraggable(child);
+    //   child.id = dishOrder[i] + 1;
+    //   child.initialXPos = dishInitialXPos;
+    //   child.initialYPos = dishInitialYPos;
+    //   this.dishes.add(child);
+    //   this.dishes.setOrigin(0, 0);
+    //   dishInitialXPos += 250;
+    // };
 
     // Sorteio
     // lista de personagens e baloes que podem ser sorteados a cada rodada
     this.balloonsToBeDrawn = [1, 2, 3, 4, 5];
-    this.characterToBeDrawn = [1, 2, 3, 4, 5];
+    this.charactersToBeDrawn = [1, 2, 3, 4, 5];
     this.roundBalloons = [...this.balloonsToBeDrawn];
-    this.roundCharacters = [...this.characterToBeDrawn];
+    this.roundCharacters = [...this.charactersToBeDrawn];
     this.drawnBalloons = [];
     Shuffle.shuffleArray(this.roundBalloons);
-    Shuffle.shuffleArray(this.characterToBeDrawn);
-    this.RoundDraw(this, this.balloonsToBeDrawn, this.characterToBeDrawn);
+    Shuffle.shuffleArray(this.roundCharacters);
+    this.RoundDraw();
 
     // comportamentos do Drag and Drop 
     this.input.on('dragstart', (pointer, gameObject) => {
@@ -120,6 +120,10 @@ class SceneMain extends Phaser.Scene {
         console.log('balloon id: ', target)
         gameObject.destroy();
         this.destroyBalloon(target.balloonId);
+        if(this.drawnBalloons.length === 0) {
+          this.restoreBalloons();
+          this.RoundDraw();
+        }
       } else {
         console.log("Errou")
         this.returnInitialPosition(gameObject);
@@ -130,12 +134,6 @@ class SceneMain extends Phaser.Scene {
     //   console.log("ENTER!")
     //   console.log(dropZone)
     // });
-
-    this.input.on('drop', (pointer, gameObject, dropZone) => {
-      // if (dropZone) {
-      console.log("DROPPED!")
-      // }
-    });
 
   } //// fim da create ////
 
@@ -149,12 +147,50 @@ class SceneMain extends Phaser.Scene {
     return drawnNumber;
   }
 
+  drawBalloons() {
+
+  }
+
+  drawDishes() {
+    this.dishes = this.add.group();
+    let dishInitialXPos = 80;
+    let dishInitialYPos;
+    let dishOrder = [0, 1, 2, 3, 4,];
+    let dishShuffled = [...dishOrder];
+    Shuffle.shuffleArray(dishOrder);
+
+    console.log("ORDEM : ", dishOrder)
+
+    // posiciona os pratos
+    for (let i = 0; i < 5; i += 1) {
+      // pra fazer o zizag de posicoes de prato
+      if (i % 2 === 0) {
+        dishInitialYPos = 540;
+      } else {
+        dishInitialYPos = 420;
+      }
+
+      const child = this.add.image(dishInitialXPos, dishInitialYPos, `dish-${dishOrder[i] + 1}`);
+      // deixando o prato interativo
+      child.setInteractive();
+      this.input.setDraggable(child);
+      child.id = dishOrder[i] + 1;
+      child.initialXPos = dishInitialXPos;
+      child.initialYPos = dishInitialYPos;
+      this.dishes.add(child);
+      this.dishes.setOrigin(0, 0);
+      dishInitialXPos += 250;
+    };
+  }
+
   // sorteia balao e personagem a cada rodada
-  RoundDraw(scene, balloonList, characterList) {
+  RoundDraw() {
+    this.drawDishes();
+
     const gameLevel = global.settings.level;
     for (let i = 0; i < gameLevel; i += 1) {
-      let balloonNumber = this.drawNumber(balloonList);
-      let characterNumber = this.drawNumber(characterList);
+      let balloonNumber = this.drawNumber(this.roundBalloons);
+      let characterNumber = this.drawNumber(this.roundCharacters);
 
       // associa um personagem a um balao
       const allCharacters = this.characters.children.entries;
@@ -169,20 +205,26 @@ class SceneMain extends Phaser.Scene {
       const drawnBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
       drawnBalloon.id = balloonNumber;
       drawnBalloon.setOrigin(0, 0);
-      scene.drawnBalloons.push(drawnBalloon);
+      this.drawnBalloons.push(drawnBalloon);
 
-      console.log("character list: ", characterList);
-      console.log("balloon list: ", balloonList);
-      console.log('SCENE: ', scene.drawnBalloons);
+      console.log("character list: ", this.charactersToBeDrawn);
+      console.log("balloon list: ", this.balloonsToBeDrawn);
+      console.log('SCENE: ', this);
     }
   };
 
   destroyBalloon(id) {
-    const self = this;
-    const balloon = this.drawnBalloons.find((item) => item.id === id);
+    const balloonIndex = this.drawnBalloons.findIndex((item) => item.id === id);
+    const balloon = this.drawnBalloons[balloonIndex];
     balloon.destroy();
-    console.log('this ', self)
-  }
+    this.drawnBalloons.splice(balloonIndex, 1);
+    // balloon.destroy();
+    // this.drawnBalloons.
+  };
+
+  restoreBalloons() {
+    this.roundBalloons = [...this.balloonsToBeDrawn];
+  };
 
   returnInitialPosition(gameObj) {
     gameObj.x = gameObj.initialXPos;
