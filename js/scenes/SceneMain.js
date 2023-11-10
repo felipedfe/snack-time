@@ -7,13 +7,13 @@ class SceneMain extends Phaser.Scene {
   }
 
   create() {
-    // BG
+    // Imagem BG
     this.bg = this.add.image(0, 0, "titleBack");
     this.bg.setOrigin(0, 0);
     this.bg.displayWidth = game.config.width;
     this.bg.displayHeight = game.config.height;
 
-    // Personagens
+    // Imagens Personagens
     let characterXPos = 0;
     const spacing = 35;
     this.characters = this.add.group();
@@ -39,13 +39,13 @@ class SceneMain extends Phaser.Scene {
       characterXPos += character.width + spacing;
     };
 
-    // Mesa
+    // Imagem Mesa
     this.table = this.add.image(0, game.config.height / 2, "table");
     this.table.displayWidth = game.config.width + 40; // + 40 é pq fiz a imagem de um tam. menor
     this.table.displayHeight = (game.config.height / 2) + 17; // idem
     this.table.setOrigin(0, 0);
 
-    // Placar
+    // Imagem Placar
     this.scoreBar = this.add.image(10, game.config.height - 70, "scoreBar");
     this.scoreBar.setOrigin(0, 0);
 
@@ -91,6 +91,7 @@ class SceneMain extends Phaser.Scene {
     this.charactersSelectedInTheRound = [];
 
     // Placar
+    this.scoreGroup = this.add.group();
     this.score = {};
     this.scoreSlot = 0;
     this.scoreSlotWidth = this.scoreBar.width / 5;
@@ -139,6 +140,7 @@ class SceneMain extends Phaser.Scene {
         if (this.drawnBalloons.length === 0) {
           const right = this.add.image(
             this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "right");
+            this.scoreGroup.add(right);
           this.scoreSlot += 1;
           right.setOrigin(0, 0);
           this.roundRestore();
@@ -149,13 +151,13 @@ class SceneMain extends Phaser.Scene {
         // this.returnInitialPosition(gameObject);
         const wrong = this.add.image(
           this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "wrong");
+        this.scoreGroup.add(wrong);
         this.scoreSlot += 1;
         wrong.setOrigin(0, 0);
-        this.destroyAllBalloons();
-        console.log(this.roundBalloons);
         this.roundRestore();
         this.roundDraw();
       }
+      console.log(this.scoreGroup)
     })
 
     // this.input.on('dragenter', (pointer, gameObject, dropZone) => {
@@ -190,12 +192,13 @@ class SceneMain extends Phaser.Scene {
 
     // adiciona balao proximo ao personagem sorteado na tela
     const drawnBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
+    // this.balloonsSelectedInTheRound.push(drawnBalloon);
     drawnBalloon.id = balloonNumber;
     drawnBalloon.setOrigin(0, 0);
     this.drawnBalloons.push(drawnBalloon);
 
     console.log("character list: ", this.charactersToBeDrawn);
-    console.log("balloon list: ", this.roundBalloons);
+    console.log("balloon list: ", this.drawnBalloons);
     // console.log('SCENE: ', this);
   };
 
@@ -254,18 +257,16 @@ class SceneMain extends Phaser.Scene {
   };
 
   destroyAllBalloons() {
-    const balloons = this.roundBalloons;
-    while (balloons > 0) {
+    const balloons = this.drawnBalloons;
+    while (balloons.length > 0) {
       const item = balloons.pop();
       item.destroy();
     }
   };
 
-  // restoreBalloons() {
-  //   this.roundBalloons = [...this.balloonsToBeDrawn];
-  // };
-
   roundRestore() {
+    // destrói todos os balões sorteados na rodada
+    this.destroyAllBalloons();
     // restaura os baloes
     this.roundBalloons = [...this.balloonsToBeDrawn];
 
@@ -277,7 +278,7 @@ class SceneMain extends Phaser.Scene {
       item.destroy();
     }
 
-    console.log("DIUSHES: ", this.dishes.children.entries.length)
+    console.log("DISHES: ", this.dishes.children.entries.length)
   };
 
   returnInitialPosition(gameObj) {
