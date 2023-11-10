@@ -138,25 +138,28 @@ class SceneMain extends Phaser.Scene {
         this.destroyBalloon(target.balloonId);
 
         if (this.drawnBalloons.length === 0) {
-          const right = this.add.image(
-            this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "right");
-            this.scoreGroup.add(right);
-          this.scoreSlot += 1;
-          right.setOrigin(0, 0);
+          // const right = this.add.image(
+          //   this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "right");
+          // this.scoreGroup.add(right);
+          // this.scoreSlot += 1;
+          // right.setOrigin(0, 0);
+          this.addToScore("right");
           this.roundRestore();
           this.roundDraw();
         }
       } else {
         console.log("Errou")
         // this.returnInitialPosition(gameObject);
-        const wrong = this.add.image(
-          this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "wrong");
-        this.scoreGroup.add(wrong);
-        this.scoreSlot += 1;
-        wrong.setOrigin(0, 0);
+        // const wrong = this.add.image(
+        //   this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "wrong");
+        // this.scoreGroup.add(wrong);
+        // this.scoreSlot += 1;
+        // wrong.setOrigin(0, 0);
+        this.addToScore("wrong");
         this.roundRestore();
         this.roundDraw();
       }
+
       console.log(this.scoreGroup)
     })
 
@@ -167,6 +170,32 @@ class SceneMain extends Phaser.Scene {
 
     //// fim da create ////
   };
+
+  addToScore(type) {
+    const checkOrX = this.add.image(
+      this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, type);
+    this.scoreGroup.add(checkOrX);
+    this.scoreSlot += 1;
+    checkOrX.setOrigin(0, 0);
+
+    const gameLevel = global.settings.level;
+    if (!this.score[gameLevel]) {
+      this.score[gameLevel] = {
+        right: 0,
+        wrong: 0,
+      };
+    }
+
+    if (!this.score[gameLevel][type]) {
+      this.score[gameLevel][type] = 1;
+    } else {
+      this.score[gameLevel][type] += 1;
+    }
+
+    if (this.scoreGroup.children.entries.length >= 5) {
+      console.log("NEXT LEVEL", this.score);
+    }
+  }
 
   // funcao que sorteia um numero
   drawNumber(list) {
