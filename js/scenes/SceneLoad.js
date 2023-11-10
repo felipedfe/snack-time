@@ -36,6 +36,11 @@ class SceneLoad extends Phaser.Scene {
       this.load.image(`balloon-${i}`, `images/balloon-${i}.png`);
     };
 
+    // placar
+    this.load.image("scoreBar", "images/score-bar.png");
+    this.load.image("right", "images/right.png");
+    this.load.image("wrong", "images/wrong.png");
+
     // audios
     // this.load.audio("right", "audio/right.wav");
     // this.load.audio("wrong", "audio/wrong.wav");
@@ -47,7 +52,7 @@ class SceneLoad extends Phaser.Scene {
     // ouvidor de eventos. dispara ações conforme a chave dela, parecido com as actions do Redux
     // esse emitter é global, desse jeito todas as partes do jogo podem se comunicar
     global.emitter = new Phaser.Events.EventEmitter;
-    console.log(global)
+    // console.log(global)
 
     // esse controller vai criar o listener das ações do botões
     global.controller = new Controller();

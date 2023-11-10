@@ -21,7 +21,7 @@ class SceneMain extends Phaser.Scene {
       const character = this.add.image(characterXPos, 70, "character").setInteractive();
       // faz o character ser uma drop zone (setar ele como interactive antes)
       character.input.dropZone = true;
-      console.log("CHARACTER: ", character)
+      // console.log("CHARACTER: ", character)
 
       // drop zone
       //const characterDropZone = this.add.zone(characterXPos, 70, character.width, character.height);
@@ -44,6 +44,10 @@ class SceneMain extends Phaser.Scene {
     this.table.displayWidth = game.config.width + 40; // + 40 é pq fiz a imagem de um tam. menor
     this.table.displayHeight = (game.config.height / 2) + 17; // idem
     this.table.setOrigin(0, 0);
+
+    // Placar
+    this.scoreBar = this.add.image(10, game.config.height - 70, "scoreBar");
+    this.scoreBar.setOrigin(0, 0);
 
     // Pratos
     // this.dishes = this.add.group();
@@ -80,12 +84,23 @@ class SceneMain extends Phaser.Scene {
     // lista de personagens e baloes que podem ser sorteados a cada rodada
     this.balloonsToBeDrawn = [1, 2, 3, 4, 5];
     this.charactersToBeDrawn = [1, 2, 3, 4, 5];
-    this.roundBalloons = [...this.balloonsToBeDrawn];
-    this.roundCharacters = [...this.charactersToBeDrawn];
+    this.roundBalloons = [];
+    this.balloonsSelectedInTheRound = [];
     this.drawnBalloons = [];
-    Shuffle.shuffleArray(this.roundBalloons);
-    Shuffle.shuffleArray(this.roundCharacters);
-    this.RoundDraw();
+    this.roundCharacters = [];
+    this.charactersSelectedInTheRound = [];
+
+    // Placar
+    this.score = {};
+    this.scoreSlot = 0;
+    this.scoreSlotWidth = this.scoreBar.width / 5;
+
+    /////////
+    // this.roundBalloons = [...this.balloonsToBeDrawn];
+    // this.roundCharacters = [...this.charactersToBeDrawn];
+    // Shuffle.shuffleArray(this.roundBalloons);
+    // Shuffle.shuffleArray(this.roundCharacters);
+    this.roundDraw();
 
     // comportamentos do Drag and Drop 
     this.input.on('dragstart', (pointer, gameObject) => {
@@ -112,21 +127,34 @@ class SceneMain extends Phaser.Scene {
     });
 
     this.input.on('drop', (pointer, gameObject, target) => {
-      console.log('--game ob->', gameObject);
+      // console.log('--game ob->', gameObject);
       // console.log('--target->', target);
-      console.log("pointer: ", pointer)
+      // console.log("pointer: ", pointer)
       if (target.balloonId === gameObject.id) {
-        console.log("Acertou")
-        console.log('balloon id: ', target)
+        console.log("Acertou");
+        // console.log('balloon id: ', target)
         gameObject.destroy();
         this.destroyBalloon(target.balloonId);
-        if(this.drawnBalloons.length === 0) {
-          this.restoreBalloons();
-          this.RoundDraw();
+
+        if (this.drawnBalloons.length === 0) {
+          const right = this.add.image(
+            this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "right");
+          this.scoreSlot += 1;
+          right.setOrigin(0, 0);
+          this.roundRestore();
+          this.roundDraw();
         }
       } else {
         console.log("Errou")
-        this.returnInitialPosition(gameObject);
+        // this.returnInitialPosition(gameObject);
+        const wrong = this.add.image(
+          this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, "wrong");
+        this.scoreSlot += 1;
+        wrong.setOrigin(0, 0);
+        this.destroyAllBalloons();
+        console.log(this.roundBalloons);
+        this.roundRestore();
+        this.roundDraw();
       }
     })
 
@@ -135,8 +163,8 @@ class SceneMain extends Phaser.Scene {
     //   console.log(dropZone)
     // });
 
-  } //// fim da create ////
-
+    //// fim da create ////
+  };
 
   // funcao que sorteia um numero
   drawNumber(list) {
@@ -145,11 +173,31 @@ class SceneMain extends Phaser.Scene {
     // tira o numero sorteado e retorna o primeiro do array (o array já foi embaralhado antes)
     const drawnNumber = list.splice(index, 1)[0];
     return drawnNumber;
-  }
+  };
 
-  drawBalloons() {
+  drawCharacterAndBalloon() {
+    let balloonNumber = this.drawNumber(this.roundBalloons);
+    let characterNumber = this.drawNumber(this.roundCharacters);
 
-  }
+    // associa um personagem a um balao
+    const allCharacters = this.characters.children.entries;
+    const drawnCharacter = allCharacters.filter((item) => item.id === characterNumber)[0];
+    drawnCharacter.balloonId = balloonNumber;
+    // console.log("----------")
+    // console.log("characterNumber ->", characterNumber);
+    // console.log("balloonNumber ->", balloonNumber);
+    //console.log("persongem sorteado ->", drawnCharacter);
+
+    // adiciona balao proximo ao personagem sorteado na tela
+    const drawnBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
+    drawnBalloon.id = balloonNumber;
+    drawnBalloon.setOrigin(0, 0);
+    this.drawnBalloons.push(drawnBalloon);
+
+    console.log("character list: ", this.charactersToBeDrawn);
+    console.log("balloon list: ", this.roundBalloons);
+    // console.log('SCENE: ', this);
+  };
 
   drawDishes() {
     this.dishes = this.add.group();
@@ -159,7 +207,7 @@ class SceneMain extends Phaser.Scene {
     let dishShuffled = [...dishOrder];
     Shuffle.shuffleArray(dishOrder);
 
-    console.log("ORDEM : ", dishOrder)
+    // console.log("ORDEM : ", dishOrder)
 
     // posiciona os pratos
     for (let i = 0; i < 5; i += 1) {
@@ -181,35 +229,20 @@ class SceneMain extends Phaser.Scene {
       this.dishes.setOrigin(0, 0);
       dishInitialXPos += 250;
     };
-  }
+  };
 
   // sorteia balao e personagem a cada rodada
-  RoundDraw() {
+  roundDraw() {
+    this.roundBalloons = [...this.balloonsToBeDrawn];
+    this.roundCharacters = [...this.charactersToBeDrawn];
+    Shuffle.shuffleArray(this.roundBalloons);
+    Shuffle.shuffleArray(this.roundCharacters);
+
     this.drawDishes();
 
     const gameLevel = global.settings.level;
     for (let i = 0; i < gameLevel; i += 1) {
-      let balloonNumber = this.drawNumber(this.roundBalloons);
-      let characterNumber = this.drawNumber(this.roundCharacters);
-
-      // associa um personagem a um balao
-      const allCharacters = this.characters.children.entries;
-      const drawnCharacter = allCharacters.filter((item) => item.id === characterNumber)[0];
-      drawnCharacter.balloonId = balloonNumber;
-      console.log("----------")
-      console.log("characterNumber ->", characterNumber);
-      console.log("balloonNumber ->", balloonNumber);
-      //console.log("persongem sorteado ->", drawnCharacter);
-
-      // adiciona balao proximo ao personagem sorteado na tela
-      const drawnBalloon = this.add.image(drawnCharacter.x + 180, 40, `balloon-${balloonNumber}`);
-      drawnBalloon.id = balloonNumber;
-      drawnBalloon.setOrigin(0, 0);
-      this.drawnBalloons.push(drawnBalloon);
-
-      console.log("character list: ", this.charactersToBeDrawn);
-      console.log("balloon list: ", this.balloonsToBeDrawn);
-      console.log('SCENE: ', this);
+      this.drawCharacterAndBalloon()
     }
   };
 
@@ -218,12 +251,33 @@ class SceneMain extends Phaser.Scene {
     const balloon = this.drawnBalloons[balloonIndex];
     balloon.destroy();
     this.drawnBalloons.splice(balloonIndex, 1);
-    // balloon.destroy();
-    // this.drawnBalloons.
   };
 
-  restoreBalloons() {
+  destroyAllBalloons() {
+    const balloons = this.roundBalloons;
+    while (balloons > 0) {
+      const item = balloons.pop();
+      item.destroy();
+    }
+  };
+
+  // restoreBalloons() {
+  //   this.roundBalloons = [...this.balloonsToBeDrawn];
+  // };
+
+  roundRestore() {
+    // restaura os baloes
     this.roundBalloons = [...this.balloonsToBeDrawn];
+
+    // restaura os pratos e apaga os que sobraram
+    const dishesLeft = this.dishes.children.entries;
+
+    while (dishesLeft.length > 0) {
+      const item = dishesLeft.pop();
+      item.destroy();
+    }
+
+    console.log("DIUSHES: ", this.dishes.children.entries.length)
   };
 
   returnInitialPosition(gameObj) {
