@@ -53,7 +53,7 @@ class SceneMain extends Phaser.Scene {
     this.scoreSlot = 0;
     this.scoreSlotWidth = this.scoreBar.width / 5;
 
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////
 
     this.roundDraw();
 
