@@ -7,9 +7,14 @@ class Controller {
     global.emitter.on(global.constants.SHOW_TITLE, this.showTitle);
     global.emitter.on(global.constants.TOGGLE_MUSIC, this.toggleMusic);
     global.emitter.on(global.constants.TOGGLE_SOUND, this.toggleSound);
+    global.emitter.on(global.constants.RETURN_TO_GAME, this.returnToGame);
   }
 
   startGame = (scene) => {
+    scene.start("SceneMain");
+  };
+
+  returnToGame = (scene) => {
     scene.start("SceneMain");
   };
 

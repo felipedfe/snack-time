@@ -29,6 +29,7 @@ window.onload = function () {
       SceneLoad,
       //SceneTitle,
       SceneMain,
+      SceneRoundEnd,
       SceneOver,
       SceneInstructions,
       SceneSettings

@@ -8,5 +8,6 @@ class Constants {
     this.SOUND_CHANGE = "SOUND_CHANGE";
     this.TOGGLE_MUSIC = "TOGGLE_MUSIC";
     this.TOGGLE_SOUND = "TOGGLE_SOUND";
+    this.RETURN_TO_GAME = "RETURN_TO_GAME";
   }
 }

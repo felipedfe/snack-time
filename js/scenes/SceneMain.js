@@ -100,6 +100,9 @@ class SceneMain extends Phaser.Scene {
   nextLevel() {
     this.destroyScoreTiles();
     global.settings.level += 1;
+    this.scene.pause();
+    // this.scene.resume();
+    this.scene.run("SceneRoundEnd");
   }
 
   addToScore(type) {
@@ -125,6 +128,7 @@ class SceneMain extends Phaser.Scene {
 
     if (this.scoreGroup.children.entries.length >= 5) {
       console.log("NEXT LEVEL", this.score);
+      global.settings.score = {...global.settings.score, ...this.score};
       this.nextLevel();
     }
   }

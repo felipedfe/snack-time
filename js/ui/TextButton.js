@@ -64,7 +64,7 @@ class TextButton extends UIBlock {
     if (this.event) {
       // esse this.scene.scene é um segundo parâmetro opcional que pode ser passado
       // para o escutador de evento. por exe, no Controller em startGame, o parâmetro scene
-      // recebido lá vai ser igual a this.scene.scene. Essa sintaze tá estranha pq this.scene
+      // recebido lá vai ser igual a this.scene.scene. Essa sintaxe tá estranha pq this.scene
       // nesse objeto equivale a this, que é a cena que foi passada pra ele acessar
       global.emitter.emit(this.event, this.scene.scene);
 
