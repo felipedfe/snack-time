@@ -7,35 +7,11 @@ class SceneMain extends Phaser.Scene {
   }
 
   create() {
-    // Imagem BG
-    this.bg = this.add.image(0, 0, "titleBack");
-    this.bg.setOrigin(0, 0);
-    this.bg.displayWidth = game.config.width;
-    this.bg.displayHeight = game.config.height;
-
-    // Imagens Personagens
-    let characterXPos = 0;
-    const spacing = 35;
-    this.characters = this.add.group();
-    for (let i = 1; i <= 5; i += 1) {
-      const character = this.add.image(characterXPos, 70, "character").setInteractive();
-      // faz o character ser uma drop zone (setar ele como interactive antes)
-      character.input.dropZone = true;
-      character.id = i;
-      character.setOrigin(0, 0);
-      this.characters.add(character);
-      characterXPos += character.width + spacing;
-    };
-
-    // Imagem Mesa
-    this.table = this.add.image(0, game.config.height / 2, "table");
-    this.table.displayWidth = game.config.width + 40; // + 40 é pq fiz a imagem de um tam. menor
-    this.table.displayHeight = (game.config.height / 2) + 17; // idem
-    this.table.setOrigin(0, 0);
-
-    // Imagem Placar
-    this.scoreBar = this.add.image(10, game.config.height - 70, "scoreBar");
-    this.scoreBar.setOrigin(0, 0);
+    // Renderiza imagens
+    renderBackground(this);
+    renderCharacters(this);
+    renderTable(this);
+    renderScore(this);
 
     // Sorteio
     // lista de personagens e baloes que podem ser sorteados a cada rodada
@@ -118,7 +94,7 @@ class SceneMain extends Phaser.Scene {
       item.destroy();
     }
     this.scoreSlot = 0;
-    console.log("---->>>",this.scoreGroup)
+    console.log("---->>>", this.scoreGroup)
   }
 
   nextLevel() {
