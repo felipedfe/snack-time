@@ -12,7 +12,7 @@ class SceneRoundEnd extends Phaser.Scene {
     // BG
     const bg = this.add.rectangle(0, 0, game.config.width, game.config.height, 0x000000)
     bg.setOrigin(0, 0);
-    bg.alpha = 0.5;
+    bg.alpha = 0.7;
 
     // grid
     this.aGrid = new AlignGrid({
@@ -60,13 +60,14 @@ class SceneRoundEnd extends Phaser.Scene {
     console.log(global);
   }
 
-  // goToSceneMain = () => {
-  //   const sceneMain = this.scene.get('SceneMain');
-  //   console.log("__CONFIg: ", sceneMain)
-  //   sceneMain.start('SceneMain');
-  // };
 
-  update() {
+// goToSceneMain = () => {
+//   const sceneMain = this.scene.get('SceneMain');
+//   console.log("__CONFIg: ", sceneMain)
+//   sceneMain.events.emit('RETURN_TO_GAME');
+// };
 
-  }
+update() {
+
+}
 }
