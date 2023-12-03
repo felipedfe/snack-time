@@ -107,7 +107,7 @@ class SceneMain extends Phaser.Scene {
 
   addToScore(type) {
     const checkOrX = this.add.image(
-      this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, type);
+    this.scoreBar.x + (this.scoreSlotWidth * this.scoreSlot), this.scoreBar.y, type);
     this.scoreGroup.add(checkOrX);
     this.scoreSlot += 1;
     checkOrX.setOrigin(0, 0);

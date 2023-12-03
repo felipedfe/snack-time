@@ -5,17 +5,17 @@ var global = {};
 
 window.onload = function () {
   //// Esse código é da doc do Phaser para checar se estamos num mobile
-  var isMobile = navigator.userAgent.indexOf("Mobile");
-  if (isMobile == -1) {
-    isMobile = navigator.userAgent.indexOf("Tablet");
-  }
+  // var isMobile = navigator.userAgent.indexOf("Mobile");
+  // if (isMobile == -1) {
+  //   isMobile = navigator.userAgent.indexOf("Tablet");
+  // }
   var w = 1360;
   var h = 740;
 
-  if (isMobile != -1) {
-    w = window.innerWidth;
-    h = window.innerHeight;
-  }
+  // if (isMobile != -1) {
+  //   w = window.innerWidth;
+  //   h = window.innerHeight;
+  // }
   ////
 
   var config = {
@@ -42,4 +42,7 @@ window.onload = function () {
   global.constants = new Constants();
 
   game = new Phaser.Game(config);
+
+  /// Modo fullscreen
+  addFullscreen();
 }

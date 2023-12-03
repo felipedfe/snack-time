@@ -12,6 +12,7 @@
   <script src="js/main.js"></script>
   <script src="js/util/shuffle.js"></script>
   <script src="js/util/align.js"></script>
+  <script src="js/util/fullscreen.js"></script>
   <script src="js/util/alignGrid.js"></script>
   <script src="js/util/mediaManager.js"></script>
   <script src="js/util/UIBlock.js"></script>
@@ -53,10 +54,13 @@
     }
 
     #game-container {
+      position: relative;
       /* esse aspect-ratio é referente ao tamanho do canvas 1360 / 740 */
       aspect-ratio: auto 1360 / 740;
       width: 98vw;
       height: 100vh;
+      /* width: 98vw;
+      height: 100vh; */
       /* background-color: red; */
 
       display: flex;
@@ -70,11 +74,21 @@
       max-width: 1360px !important;
       max-height: 740px !important;
     }
+
+    #fullscreen-button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 5px;
+    }
   </style>
 </head>
 
 <body>
   <section id="game-container">
+    <button id="fullscreen-button">
+      fullscreen
+    </button>
 
   </section>
 </body>
